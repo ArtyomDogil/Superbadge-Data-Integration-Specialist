@@ -1,19 +1,21 @@
 public class ProjectCalloutService {
     public static final String PROJECT_SERVICE_TOKEN_NAME = 'ProjectServiceToken';
 
-    @invocableMethod(label='Pass the Opportunity ID' description='Pass the Opportunity ID, when an existing opportunity\'s type is a New Project and its stage is changed to Closed Won, to make an outbound RESTful call' category='Opportunity')
+    @invocableMethod(label='Pass the Opportunity ID'
+                     description='Pass the Opportunity ID, when an existing opportunity\'s type is a New Project and its stage is changed to Closed Won, to make an outbound RESTful call'
+                     category='Opportunity')
 	public static void postOpportunityToPMS(List<Id> oppIds){
         if(oppIds.size() > 0){
             System.enqueueJob(new QueueablePMSCall(oppIds));
         }
     }
 
-    public class QueueablePMSCall implements System.Queueable, Database.AllowsCallouts{
+    public class QueueablePMSCall implements Queueable, Database.AllowsCallouts{
         List<Id> oppIdsToProcess;
         public QueueablePMSCall(List<Id> oppIds){
             oppIdsToProcess = oppIds;
         }
-        public void execute(System.QueueableContext context) {
+        public void execute(QueueableContext context) {
             collectRequestForCallout(oppIdsToProcess);
         }
     }
